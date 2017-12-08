@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+	<html lang="en">
+		<head> 
+			<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+			<style>
+				*{
+					padding: 0px;
+					margin: 0px; 
+				}
+				body{
+					font-size: 14px; /*  0.14 * 10（基本字体） * 10（倍数） = 14px */  
+				}
+				h3{
+					text-align: center;
+					padding: 35px 0px;
+					font-size: 18px;
+				}
+				.picbox:after{
+				 	display: block;
+				 	content: " ";
+				 	height: 0;
+				 	visibility: hidden;
+				 	clear: both;
+				} 
+		　　　　.picbox{
+		　　　　　　zoom:1;/* 为了兼容IE */
+		　　　　}
+				.picbox .upload_box{
+					width: 200px;
+					height: 200px;
+					position: relative;
+					background-color: #edf0f2;
+					display: -webkit-box;
+				    display: -ms-flexbox;
+				    display: -webkit-flex;
+				    display: flex;
+				    -webkit-display: -webkit-flex;
+				    -webkit-align-items: center;
+				    align-items: center;
+				    -webkit-justify-content: center;
+				    justify-content: center;
+				    float: left;
+				    margin-left: 4%;
+				    margin-bottom: 4%;
+				}
+				.upload_box input{
+					width: 100%;
+					height: 100%;
+					/* older safari/Chrome browsers */  
+				    -webkit-opacity: 0;  
+				    /* Netscape and Older than Firefox 0.9 */  
+				    -moz-opacity: 0;  
+				    /* Safari 1.x (pre WebKit!) 老式khtml内核的Safari浏览器*/  
+				    -khtml-opacity: 0;  
+				    /* IE9 + etc...modern browsers */  
+				    opacity: 0;  
+				    /* IE 4-9 */  
+				    filter:alpha(opacity=0);  
+				    /*This works in IE 8 & 9 too*/  
+				    -ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";  
+				    /*IE4-IE9*/  
+				    filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=0);
+					position: absolute;
+					left: 0;
+					top: 0;
+					font-size: 60px;
+				}
+				.upload_box .upload_default{
+					display: block;
+					max-width: 100%;
+					max-height: 100%;
+				}
+				.upload_box .delete_icon{
+					display: block;
+					position: absolute;
+					right: -15px;
+					top: -15px;
+					display: none;
+				}
+
+			</style>
+		</head> 
+	<body> 
+		<div class="wrapper">
+			<h3>上传图片</h3>
+			<div class="picbox" id="picbox">
+				<div class="upload_box" >
+					<img id="imgPre" src="images/upload_default.png" class="upload_default" style="display: block;" /><input type="file" name="imgOne" id="imgOne" onchange="preImg(this);" /><img src="images/icon_delete.png" class="delete_icon" alt="" onclick="Delete(this)" />
+				</div>
+			</div>
+		</div>
+		 
+		<script type="text/javascript"> 
+			/** 
+			* 从 file 域获取 本地图片 url 
+			*/ 
+		    var userAgent = navigator.userAgent; //取得浏览器的userAgent字符串  
+		    var isIE = userAgent.indexOf("compatible") > -1 && userAgent.indexOf("MSIE") > -1; //判断是否IE<11浏览器  
+		    var isIE11 = userAgent.indexOf('Trident') > -1 && userAgent.indexOf("rv:11.0") > -1;
+
+			function getFileUrl(sourceId) { 
+				var url; 
+				if (isIE) { // IE 
+					url = sourceId.value; 
+				}else if (window.navigator.userAgent.indexOf("Chrome") >= 1 || window.navigator.userAgent.indexOf("Safari") >= 1){
+					url = window.webkitURL.createObjectURL(sourceId.files.item(0));
+				}else{
+					url = window.URL.createObjectURL(sourceId.files.item(0));
+				}
+				return url; 
+			} 
+
+			/** 
+			* 将本地图片 显示到浏览器上 
+			*/ 
+			function preImg(sourceId) { 
+
+				var url = getFileUrl(sourceId);
+				//判断文件上传类型
+				var AllImgExt=".jpg|.jpeg|.gif|.png|";
+				var extName = sourceId.files[0].name.substr(sourceId.files[0].name.lastIndexOf(".")).toLowerCase();//（把路径中的所有字母全部转换为小写）
+				if(AllImgExt.indexOf(extName+"|")==-1){  
+	                ErrMsg="该文件类型不允许上传。请上传 "+AllImgExt+" 类型的文件，当前文件类型为"+extName;  
+	                alert(ErrMsg);  
+	                return false;  
+	            }
+
+				sourceId.previousSibling.setAttribute('src',url);
+				//删除
+				sourceId.nextSibling.style.display="block";
+				//获取上传图片的当前个数
+				var getsClass = getClass("picbox","upload_box");
+				//判断修改图片还是新增
+				//最多上传3张
+				if(getsClass.length < 3 && sourceId.previousSibling.getAttribute('upsuccess') != "upsuccess"){
+					sourceId.previousSibling.setAttribute('upsuccess','upsuccess');
+					document.getElementById("picbox").innerHTML+='<div class="upload_box" ><img id="imgPre" src="images/upload_default.png" class="upload_default" style="display: block;" /><input type="file" name="imgOne" id="imgOne" onchange="preImg(this);" /><img src="images/icon_delete.png" class="delete_icon" alt="" onclick="Delete(this)" /></div>';
+				}else if(getsClass.length == 3){
+					sourceId.previousSibling.setAttribute('upsuccess','upsuccess');
+				}
+			}
+
+			//删除
+			function Delete(del){
+				//获取上传图片的当前个数
+				var getsClass = getClass("picbox","upload_box");
+
+				if(getsClass.length == 3 && del.parentNode.parentNode.lastChild.firstChild.getAttribute('upsuccess') == "upsuccess"){
+
+					del.parentNode.parentNode.removeChild(del.parentNode);
+
+					document.getElementById("picbox").innerHTML+='<div class="upload_box" ><img id="imgPre" src="images/upload_default.png" class="upload_default" style="display: block;" /><input type="file" name="imgOne" id="imgOne" onchange="preImg(this);" /><img src="images/icon_delete.png" class="delete_icon" alt="" onclick="Delete(this)" /></div>';
+				}else{
+					del.parentNode.parentNode.removeChild(del.parentNode);
+				}
+			}
+ 			
+ 			//解决getElementsByClassName兼容至ie9+
+			function getClass(oParent,clsName){
+	  　　  	var oParent = document.getElementById(oParent);
+		        var boxArr = new Array();
+		        oElements  = oParent.getElementsByTagName('*');
+		        for(var i=0;i<oElements.length;i++){
+		            if(oElements[i].className == clsName){
+		              boxArr.push(oElements[i]);
+		            }
+		        }
+	            return boxArr;
+	        }
+		</script> 
+	</body> 
+</html> 
