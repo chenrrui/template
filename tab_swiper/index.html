@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>可左右滑动tab切换</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<!-- Link Swiper's CSS -->
+		<link rel="stylesheet" href="../common_css/swiper.min.css">
+	</head>
+
+	<body>
+
+		<style>
+			* {
+			    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+			}
+			html, body {
+			    position: relative; 
+			    height: 100%;
+			}
+		        body {
+			    background: #eee;
+			    font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
+			    font-size: 14px;
+			    color:#333;
+			    margin: 0;
+			    padding: 0;
+		        }
+			.swiper-container {
+			    width: 100%;
+		            height: 100%;
+			}
+			.swiper-slide {
+			    text-align: center;
+			    font-size: 18px;
+			    background: #fff;
+
+			    /* Center slide text vertically */
+			    display: -webkit-box;
+			    display: -ms-flexbox;
+			    display: -webkit-flex;
+			    display: flex;
+			    -webkit-box-pack: center;
+			    -ms-flex-pack: center;
+			    -webkit-justify-content: center;
+			    justify-content: center;
+			    -webkit-box-align: center;
+			    -ms-flex-align: center;
+			    -webkit-align-items: center;
+			    align-items: center;
+			}
+			.swiper-pagination-bullet {
+			    width: 33.3%;
+			    height: 40px;
+			    text-align: center;
+			    line-height: 40px;
+			    font-size: 12px;
+			    color:#333;
+			    opacity: 1;
+			    background: #fff;
+			    border-radius: 0;
+		        }
+			.swiper-pagination-bullet-active {
+			    color:#fff;
+			    background: #21a4f4;
+			}
+			.swiper-container-horizontal>.swiper-pagination{
+			    top: 0;
+			    bottom: initial;
+			    border-bottom: 1px solid #ededed;
+			    background-color: #fff;
+			}
+			.swiper-container-horizontal>.swiper-pagination .swiper-pagination-bullet{
+			    margin: 0px; 
+			}
+			.swiper-slide{
+			    width: 100%;
+			}
+			.swiper-slide p{
+			    font-size: 13px;
+			    line-height: 1.5em;
+			    width: 75%;
+			    text-align: left;
+			    margin: 0px auto 20px; 
+			}
+			.swiper-slide img{
+			    display: block;
+			    margin: 0px auto; 
+			}
+			.swiper-wrapper{
+			    padding-top: 40px;
+			}
+		</style>
+		<!-- Swiper -->
+		<div class="swiper-container">
+		    <div class="swiper-wrapper">
+			<div class="swiper-slide">
+			    <div>晴天</div>
+			</div>
+			<div class="swiper-slide">
+			    <div>多云</div>
+		 	</div>
+		 	<div class="swiper-slide">
+			    <div>小雨</div>
+			</div>
+		    </div>
+		    <!-- Add Pagination -->
+        	    <div class="swiper-pagination"></div>
+		</div>
+		<!-- Swiper JS -->
+		<script src="../common_js/jquery.min.js"></script>
+		<script src="../common_js/swiper.min.js"></script>
+		<script>
+
+		    var winH = $(window).height();
+		    $('.swiper-wrapper').height(winH-40);
+
+		    var mySwiper = new Swiper('.swiper-container',{
+			pagination: '.swiper-pagination',
+			paginationClickable: true,
+			paginationBulletRender: function (index, className) {
+			    switch (index) {
+			      case 0: name='周一';break;
+			      case 1: name='周二';break;
+			      case 2: name='周三';break;
+			      default: name='';
+			    }
+			    return '<li class="' + className + '">' + name + '</li>';
+			}
+		    });
+		</script>
+
+	</body>
+
+</html>
